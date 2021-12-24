@@ -113,7 +113,7 @@ int main() {
     std::cout<<"Fully Compressed Text Size: " << compressedText.length() << " bytes\n";
     std::cout<<"Total Compressed Size: "<<dictionarySize+compressedText.length()<<" bytes\n";
 
-    std::cout<<compressedText<<'\n';
+    //std::cout<<compressedText<<'\n';
 
     //Step 5
 
