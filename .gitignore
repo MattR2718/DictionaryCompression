@@ -1,2 +1,4 @@
 /build
 /test.txt
+/out.txt
+/.gitignore
