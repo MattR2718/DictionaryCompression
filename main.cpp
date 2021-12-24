@@ -110,6 +110,9 @@ int main() {
 
     //Step 4 - fully compress and calculate size
     std::string compressedText = compressAll(original, dict);
+    //ERROR HERE
+    //DONT TREAT EVERY NUMBER AS CHARACTERS
+    //EACH NUMBER IS 2 BYTES SO 547 IS 2 BYTES NOT 3 AS IT WOULD TREATING IT AS A CHARACTER
     std::cout<<"Fully Compressed Text Size: " << compressedText.length() << " bytes\n";
     std::cout<<"Total Compressed Size: "<<dictionarySize+compressedText.length()<<" bytes\n";
 
