@@ -7,6 +7,9 @@
 #include <sstream>
 #include <iomanip>
 
+#include "dictionary.h"
+#include "compress.h"
+
 //Returns true if not a letter or space
 bool notAlpha(char c) { return ((isalpha(c)) || (c == ' ')) ? false : true; }
 
@@ -17,6 +20,7 @@ void replaceAll(std::string& text, std::string chars){
     }
 }
 
+/*
 //Return whether a given element is in the dictionary
 bool inDict(std::map<std::string, uint16_t>& dict, std::string& word){
     for (int i = 0; i < dict.size(); i++){
@@ -59,6 +63,7 @@ int calcDictSize(std::map<std::string, uint16_t>& dict){
     int extra = dict.size() * 4;
     return letterSum+extra;
 }
+*/
 
 bool strIsNum(const std::string& s)
 {
@@ -83,6 +88,7 @@ bool isStrDigit(char c){
     return false;
 }
 
+/*
 std::tuple<std::string, int, int> compressAll(const std::string& text, const std::map<std::string, uint16_t>& dict){
     std::string outText = "";
     int nums = 0;
@@ -112,51 +118,19 @@ std::tuple<std::string, int, int> compressAll(const std::string& text, const std
 
 std::tuple<std::string, int, int> compressWord(const std::string& text, const std::map<std::string, uint16_t>& dict, const std::string w){
     std::string outText = "";
+    std::string word = "";
     int nums = 0;
     int chars = 0;
     for (int i = 0; i < text.length(); i++){
-        int j = 0;
-        std::string word = "";
-        if (isalpha(text[i])){ 
-            while (isalpha(text[i+j])){
-                word += text[i+j];
-                j++;
-            }
-            i += (j - 1);
-            //std::cout<<word<<'\n';
-            if (word == w) {
-                std::stringstream ss;
-                ss << std::setw(3) << std::setfill('0') << dict.at(w);
-                outText += ss.str();
-                nums++;
-            } else {
-                outText += word;
-                chars += word.length();
-            }
-        } else if (isStrDigit(text[i])){
-            while (isStrDigit(text[i+j])){
-                word += text[i+j];
-                j++;
-            }
-            std::cout<<word<<'\n';
-            i += (j - 1);
-            if (word == w) {
-                std::stringstream ss;
-                ss << std::setw(3) << std::setfill('0') << dict.at(w);
-                outText += ss.str();
-                nums++;
-            } else {
-                outText += word;
-                chars += keyAtEle(word, dict).length();
-            }
-        }
-        else {
-            outText += text[i];
-            chars++;
+        if (text[i] == ' '){
+            if (dict.at(word) )
+            outText += word;
+        } else {
+            word += text[i];
         }
     }
-    return std::make_tuple(outText, nums, chars);
 }
+*/
 
 int countChars(const std::string& text){
     int count = 0;
@@ -237,6 +211,8 @@ int main() {
     std::cout<<"Total Compressed Size: "<<dictionarySize+compressedSize<<" bytes\n";
 
     //Step 5 - find break even point
+    //RETHINK HOW DOING STEP 5
+    /*
     std::string compressingText = parsedText;
     std::vector<std::pair<std::string, int>> sizes;
     std::map<std::string, uint16_t> currDict;
@@ -257,4 +233,5 @@ int main() {
         //std::cout<<compressedSize<<'\n';
         writeToFile(compressingText, formatFileName(compWord, dict), true, dict, compWord);
     }
+    */
 }
