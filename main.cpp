@@ -82,9 +82,45 @@ std::tuple<std::string, int, int> compressAll(const std::string& text, std::map<
     return std::make_tuple(outText, nums, chars);
 }
 
-void writeToFile(const std::string& text, const std::string name){
+std::tuple<std::string, int, int> compressWord(const std::string& text, const std::pair<std::string, uint16_t> wPair){
+    std::string outText = "";
+    int nums = 0;
+    int chars = 0;
+    for (int i = 0; i < text.length(); i++){
+        if (isalpha(text[i])) { 
+            int j = 0;
+            std::string word = "";
+            while (isalpha(text[i+j])){
+                word += text[i+j];
+                j++;
+            }
+            i += (j - 1);
+            if (wPair.first == word) {
+                outText += std::to_string(wPair.second);
+                nums++;
+            } else {
+                outText += word;
+                chars += word.length();
+            }
+        }
+        else {
+            outText += text[i];
+            chars++;
+        }
+    }
+    return std::make_tuple(outText, nums, chars);
+}
+
+void writeToFile(const std::string& text, const std::string name, bool writeDict = false, const std::map<std::string, uint16_t>& dict = std::map<std::string, uint16_t>{}, const std::string word = ""){
     std::ofstream file(name);
-    file << text;
+    file << text << "\n\n";
+    if (writeDict){
+        for (auto& ke : dict){
+            if (ke.second <= dict.at(word)){
+                file << ke.first << ", " << ke.second << '\n';
+            }
+        }
+    }
 }
 
 int main() {
@@ -111,12 +147,13 @@ int main() {
     //Replace any groups of 2 or more spaces with a single space
     text = std::regex_replace(text, std::regex("\\s{2,}"), " ");
     
-    writeToFile(text, "../out.txt");
+    //writeToFile(text, "../out.txt");
 
     //Step 2 - create dictionary
     //Make dictionary of all unique words
     std::map<std::string, uint16_t> dict = makeDict(text);
     //printDict(dict);
+    writeToFile(text, "../out.txt", true, dict, "obstreperously");
 
     //Step 3 - calculate size of original text and dictionary
     std::cout<<"Original Text Size: "<<text.length()<<" bytes\n";
@@ -131,5 +168,5 @@ int main() {
     std::cout<<"Total Compressed Size: "<<dictionarySize+compressedSize<<" bytes\n";
 
     //Step 5 - find break even point
-
+    
 }
