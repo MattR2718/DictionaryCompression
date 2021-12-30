@@ -7,9 +7,11 @@
 #include <sstream>
 #include <iomanip>
 
+#include "clean.h"
 #include "dictionary.h"
 #include "compress.h"
 
+/*
 //Returns true if not a letter or space
 bool notAlpha(char c) { return ((isalpha(c)) || (c == ' ')) ? false : true; }
 
@@ -19,6 +21,7 @@ void replaceAll(std::string& text, std::string chars){
         std::replace(text.begin(), text.end(), c, ' ');
     }
 }
+*/
 
 /*
 //Return whether a given element is in the dictionary
@@ -180,6 +183,7 @@ int main() {
     //text += " " + text;
     
     //Step 1 - remove punctuation
+    /*
     //Replace all word splitting punctuation with spaces to split into 2 words
     replaceAll(text, "-'\"’");
     //Remove all characters from text that are not a letter or space
@@ -187,6 +191,9 @@ int main() {
     //Replace any groups of 2 or more spaces with a single space
     text = std::regex_replace(text, std::regex("\\s{2,}"), " ");
     text.erase(text.size() - 1);
+    */
+    clean(text);
+    //std::cout<<text<<'\n';
     std::string parsedText = text;
     //writeToFile(text, "../out.txt");
 

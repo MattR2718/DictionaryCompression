@@ -43,3 +43,5 @@ std::tuple<std::string, int, int> compressWord(const std::string& text, const st
         }
     }
 }
+
+//ADD IN CALCULATING COMPRESSION WITHOUT ACTUALLY COMPRESSING
