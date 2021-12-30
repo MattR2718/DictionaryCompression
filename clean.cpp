@@ -10,7 +10,7 @@ void replaceAll(std::string& text, std::string chars){
     }
 }
 
-std::string clean(std::string& text){
+std::string cleanTxt(std::string& text){
     //Replace all word splitting punctuation with spaces to split into 2 words
     replaceAll(text, "-'\"’");
     //Remove all characters from text that are not a letter or space
@@ -18,7 +18,8 @@ std::string clean(std::string& text){
     //Replace any groups of 2 or more spaces with a single space
     text = std::regex_replace(text, std::regex("\\s{2,}"), " ");
     //Remove excess space at end of text
-    text.erase(text.size() - 1);
-    
+    if (text[text.length() - 1] == ' ') {text.erase(text.size() - 1);}
+    if (text[0] == ' ') {text.erase(text.begin());}
+
     return text;
 }

@@ -36,7 +36,7 @@ std::tuple<std::string, int, int> compressWord(const std::string& text, const st
     int chars = 0;
     for (int i = 0; i < text.length(); i++){
         if (text[i] == ' '){
-            if (dict.at(word) )
+            if (dict.at(word))
             outText += word;
         } else {
             word += text[i];
