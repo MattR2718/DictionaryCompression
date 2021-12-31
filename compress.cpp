@@ -1,4 +1,23 @@
 #include "compress.h"
+#include "clean.h"
+
+std::vector<std::string> getWords(std::string text, bool all = false){
+    text = cleanTxt(text);
+
+    std::istringstream iss(text);
+    std::vector<std::string> words(std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>());
+
+    if (all) { return words; }
+
+    std::vector<std::string> unique = {};
+    for(auto& w : words){
+        if (std::find(unique.begin(), unique.end(), w) == unique.end()){
+            unique.push_back(w);
+        }
+    }
+
+    return unique;
+}
 
 std::tuple<std::string, int, int> compressAll(const std::string& text, const std::map<std::string, uint16_t>& dict){
     std::string outText = "";
@@ -27,74 +46,88 @@ std::tuple<std::string, int, int> compressAll(const std::string& text, const std
     return std::make_tuple(outText, nums, chars);
 }
 
-//SORT OUT WAY OF COMPRESSING WORD BY WORD
-
-std::tuple<std::string, int, int> compressWord(const std::string& text, const std::map<std::string, uint16_t>& dict, const std::string w){
-    std::string outText = "";
-    std::string word = "";
-    int nums = 0;
-    int chars = 0;
-    for (int i = 0; i < text.length(); i++){
-        if (text[i] == ' '){
-            if (dict.at(word))
-            outText += word;
-        } else {
-            word += text[i];
-        }
-    }
-}
-
-//ADD IN CALCULATING COMPRESSION WITHOUT ACTUALLY COMPRESSING
-std::vector<int> calcBreakEven(const std::string& text, const int originalSize){
+std::vector<std::tuple<int, int, int>> calcSizesAll(const std::string& text){
     //std::cout<<text<<'\n';
+    std::vector<std::string> words = getWords(text);
     std::vector<std::string> used = {""};
-    std::vector<int> sizes = {};
+    std::vector<std::tuple<int, int, int>> sizes;
     int compressedSize = text.length();
     int dictSize = 0;
-    int atWord = 0;
-    //std::cout<<text.length()<<'\n';
     int c = 0;
-    while (atWord < text.length()){
-        std::string word = "";
-        while ((atWord < text.length()) && (std::find(used.begin(), used.end(), word) != used.end())){
-            word = "";
-            while ((atWord < text.length()) && (isalpha(text[atWord]))){
-                word += text[atWord];
-                atWord++;
-            }
-            atWord ++;
-        }
-        c++;
-        if (word.length() > 0) { 
-            used.push_back(word);
-            dictSize += word.length() + 4;
-            //std::cout<<c << ": " << word<<'\n';
-        }
-        //std::cout<<dictSize<<'\n';
+    std::ofstream file("../sizes.txt");
+    for(auto& word : words){
+        used.push_back(word);
+        dictSize += word.length() + 4;
+        int occur = 0;
         for (int i = 0; i < text.length(); i++){
             if (isalpha(text[i])){
                 std::string w = "";
-                int j = i;
-                while (isalpha(text[j])){
-                    w += text[j];
-                    j++;
+                while (isalpha(text[i])){
+                    w += text[i];
+                    i++;
                 }
-                j--;
+                i--;
                 if (w == word){
+                    occur++;
                     compressedSize -= w.length();
                     compressedSize += 2; 
                 }
-                i = j;
             }
         }
-        //std::cout<<word << "  " << compressedSize<<'\n';
-        sizes.push_back(compressedSize + dictSize);
+        c++;
+        //std::cout<< "Total Size: " << compressedSize + dictSize << "    Compressed Size: " << compressedSize << "    Dict Size: " << dictSize << "    Word: " << word << "   No. Word: " << occur << '\n';
+        sizes.push_back(std::make_tuple(0, text.length(), compressedSize + dictSize));
+        file << std::get<1>(sizes[c-1]) << ' ' << std::get<2>(sizes[c-1]) << ' ' << used[c] << '\n';
     }
+    return sizes;
+}
 
+std::vector<std::pair<int, int>> calcSizes(const std::string& text){
+    std::vector<std::string> used = {""};
+    int dictSize = 0;
+    int compressedSize = 0;
+    std::vector<std::pair<int, int>> sizes;
     std::ofstream file("../sizes.txt");
-    for (int l = 0; l < sizes.size()-1; l++){
-        file << l << ' ' << sizes[l] << ' ' << used[l+1] << '\n';
+    for(int i = 0; i < text.length(); i++){
+        std::string word = "";
+        if (!isalpha(text[i])){
+            compressedSize++;
+            //if (static_cast<int>(text[i]) < 128) { word += text[i]; } else { word = "'";}
+            word += "P";
+            //std::cout<<static_cast<int>(text[i])<<'\n';
+        }else{
+            while(isalpha(text[i])){
+                word += text[i];
+                i++;
+            }
+            i--;
+            if (std::find(used.begin(), used.end(), word) == used.end()){
+                used.push_back(word);
+                dictSize += word.length() + 4;
+            }
+            compressedSize += 2;
+        }
+        sizes.push_back(std::make_pair(i, compressedSize + dictSize));
+        file << i << ' ' << compressedSize+dictSize << ' ' << word << '\n';
     }
 
     return sizes;
+}
+
+void getBreakEven(const std::vector<std::pair<int, int>>& sizes, const std::string& text){
+    bool found = false;
+    for (auto& p : sizes){
+        if (p.first > p.second){
+            std::cout<<"Break Even Point: " << p.first << " Characters into text\n";
+            std::cout<<"Text At Break Even Point: ";
+            for (int i = p.first - 10; i < p.first + 11; i++){
+                if ((i > 0) && (i < text.length())){
+                    std::cout<<text[i];
+                }
+            }
+            std::cout<<'\n';
+            return;
+        }
+    }
+    std::cout<<"NO BREAK EVEN POINT FOUND\n";
 }

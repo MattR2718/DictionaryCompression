@@ -10,6 +10,8 @@
 
 std::tuple<std::string, int, int> compressAll(const std::string& text, const std::map<std::string, uint16_t>& dict);
 
-std::tuple<std::string, int, int> compressWord(const std::string& text, const std::map<std::string, uint16_t>& dict, const std::string w);
+std::vector<std::tuple<int, int, int>> calcSizesAll(const std::string& text);
 
-std::vector<int> calcBreakEven(const std::string& text, const int originalSize);
+std::vector<std::pair<int, int>> calcSizes(const std::string& text);
+
+void getBreakEven(const std::vector<std::pair<int, int>>& sizes, const std::string& text);

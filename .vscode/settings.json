@@ -50,6 +50,9 @@
         "chrono": "cpp",
         "ratio": "cpp",
         "set": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "complex": "cpp",
+        "list": "cpp",
+        "functional": "cpp"
     }
 }

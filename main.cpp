@@ -94,10 +94,10 @@ int main() {
     int compressedSize = (std::get<1>(compressedText) * 2) + std::get<2>(compressedText);
     std::cout<<"Fully Compressed Text Size: " << compressedSize << " bytes\n";
     std::cout<<"Total Compressed Size: "<<dictionarySize+compressedSize<<" bytes\n";
+    std::cout<<"Size Difference: " << original.length() - (dictionarySize+compressedSize) <<" bytes\n";
 
     //Step 5 - find break even point
-    std::vector<int> sizes = calcBreakEven(original, original.length());
-    for (auto& s : sizes){
-        std::cout<<s<<'\n';
-    }
+    //std::vector<std::tuple<int, int, int>> allSizes = calcSizesAll(original);
+    std::vector<std::pair<int, int>> sizes = calcSizes(original);
+    getBreakEven(sizes, original);
 }
