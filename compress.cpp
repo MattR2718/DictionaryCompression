@@ -45,3 +45,56 @@ std::tuple<std::string, int, int> compressWord(const std::string& text, const st
 }
 
 //ADD IN CALCULATING COMPRESSION WITHOUT ACTUALLY COMPRESSING
+std::vector<int> calcBreakEven(const std::string& text, const int originalSize){
+    //std::cout<<text<<'\n';
+    std::vector<std::string> used = {""};
+    std::vector<int> sizes = {};
+    int compressedSize = text.length();
+    int dictSize = 0;
+    int atWord = 0;
+    //std::cout<<text.length()<<'\n';
+    int c = 0;
+    while (atWord < text.length()){
+        std::string word = "";
+        while ((atWord < text.length()) && (std::find(used.begin(), used.end(), word) != used.end())){
+            word = "";
+            while ((atWord < text.length()) && (isalpha(text[atWord]))){
+                word += text[atWord];
+                atWord++;
+            }
+            atWord ++;
+        }
+        c++;
+        if (word.length() > 0) { 
+            used.push_back(word);
+            dictSize += word.length() + 4;
+            //std::cout<<c << ": " << word<<'\n';
+        }
+        //std::cout<<dictSize<<'\n';
+        for (int i = 0; i < text.length(); i++){
+            if (isalpha(text[i])){
+                std::string w = "";
+                int j = i;
+                while (isalpha(text[j])){
+                    w += text[j];
+                    j++;
+                }
+                j--;
+                if (w == word){
+                    compressedSize -= w.length();
+                    compressedSize += 2; 
+                }
+                i = j;
+            }
+        }
+        //std::cout<<word << "  " << compressedSize<<'\n';
+        sizes.push_back(compressedSize + dictSize);
+    }
+
+    std::ofstream file("../sizes.txt");
+    for (int l = 0; l < sizes.size()-1; l++){
+        file << l << ' ' << sizes[l] << ' ' << used[l+1] << '\n';
+    }
+
+    return sizes;
+}

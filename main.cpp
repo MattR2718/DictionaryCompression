@@ -73,8 +73,8 @@ int main() {
     }
 
     //text = "Entering that gable-ended Spouter-Inn, you found yourself in a wide, low in in artist’s";
+    text += " " + text;
     std::string original = text;
-    //text += " " + text;
     
     //Step 1 - remove punctuation
     cleanTxt(text);
@@ -84,7 +84,7 @@ int main() {
     std::map<std::string, uint16_t> dict = makeDict(text);
 
     //Step 3 - calculate size of original text and dictionary
-    std::cout<<"Original Text Size: "<<text.length()<<" bytes\n";
+    std::cout<<"Original Text Size: "<<original.length()<<" bytes\n";
     int dictionarySize = calcDictSize(dict);
     std::cout<<"Dictionary Size: "<<dictionarySize<<" bytes\n";
     
@@ -96,5 +96,8 @@ int main() {
     std::cout<<"Total Compressed Size: "<<dictionarySize+compressedSize<<" bytes\n";
 
     //Step 5 - find break even point
-    
+    std::vector<int> sizes = calcBreakEven(original, original.length());
+    for (auto& s : sizes){
+        std::cout<<s<<'\n';
+    }
 }
