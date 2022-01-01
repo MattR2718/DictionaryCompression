@@ -17,7 +17,7 @@ std::string cleanTxt(std::string& text){
     text.erase(std::remove_if(text.begin(), text.end(), notAlpha), text.end());
     //Replace any groups of 2 or more spaces with a single space
     text = std::regex_replace(text, std::regex("\\s{2,}"), " ");
-    //Remove excess space at end of text
+    //Remove excess space at start or end of text
     if (text[text.length() - 1] == ' ') {text.erase(text.size() - 1);}
     if (text[0] == ' ') {text.erase(text.begin());}
 

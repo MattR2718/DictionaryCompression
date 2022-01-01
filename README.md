@@ -12,5 +12,7 @@ Text At Break Even Point: first house they ente
 ```
 
 ### Graphs
-<img src="https://github.com/MattR2718/dictionaryCompression/blob/master/graphs/breakEvenPoint.png">
+Full Graph:
 <img src="https://github.com/MattR2718/dictionaryCompression/blob/master/graphs/fullGraph.png">
+Break Even Point:
+<img src="https://github.com/MattR2718/dictionaryCompression/blob/master/graphs/breakEvenPoint.png">

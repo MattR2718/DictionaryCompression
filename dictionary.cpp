@@ -1,7 +1,7 @@
 #include "dictionary.h"
 
 //Return whether a given element is in the dictionary
-bool inDict(std::map<std::string, uint16_t>& dict, std::string& word){
+bool inDict(std::map<std::string, uint16_t>& dict, const std::string& word){
     for (int i = 0; i < dict.size(); i++){
         if (dict[word] == i) { return true; }
     }
@@ -36,9 +36,10 @@ void printDict(std::map<std::string, uint16_t>& dict){
     std::cout<<"------------------\n";
 }
 
+//The sum of the length of word in bytes, plus one byte field delimiter, plus two bytes for number assigned, plus one byte entry delimiter for all unique words
 int calcDictSize(std::map<std::string, uint16_t>& dict){
     int letterSum = 0;
     for (auto& w : dict){ letterSum += w.first.length(); }
     int extra = dict.size() * 4;
-    return letterSum+extra;
+    return letterSum + extra;
 }

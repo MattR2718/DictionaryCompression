@@ -1,6 +1,7 @@
 #include "compress.h"
 #include "clean.h"
 
+//Returns vector of either all words in string, or all unique words in string
 std::vector<std::string> getWords(std::string text, bool all = false){
     text = cleanTxt(text);
 
@@ -19,6 +20,7 @@ std::vector<std::string> getWords(std::string text, bool all = false){
     return unique;
 }
 
+//Returns the completely compressed text, the number of compressed words (nums) and the number of punctuation (chars)
 std::tuple<std::string, int, int> compressAll(const std::string& text, const std::map<std::string, uint16_t>& dict){
     std::string outText = "";
     int nums = 0;
@@ -46,6 +48,9 @@ std::tuple<std::string, int, int> compressAll(const std::string& text, const std
     return std::make_tuple(outText, nums, chars);
 }
 
+//Initial idea
+//Take entire text and compress every occurrence of first word, then every occurrence of second word
+//Does not produce a sensible/single break even point
 std::vector<std::tuple<int, int, int>> calcSizesAll(const std::string& text){
     //std::cout<<text<<'\n';
     std::vector<std::string> words = getWords(text);
@@ -82,6 +87,10 @@ std::vector<std::tuple<int, int, int>> calcSizesAll(const std::string& text){
     return sizes;
 }
 
+//Compress text word by word
+//e.g compress first word, then first and second word ...
+//Produces a break even point in second text as compressed size only increases by 2 bytes every word as all words are in dictionary
+//whereas total text size increases by the size of each word, majority of which are greater than 2 bytes
 std::vector<std::pair<int, int>> calcSizes(const std::string& text){
     std::vector<std::string> used = {""};
     int dictSize = 0;
@@ -93,7 +102,7 @@ std::vector<std::pair<int, int>> calcSizes(const std::string& text){
         if (!isalpha(text[i])){
             compressedSize++;
             //if (static_cast<int>(text[i]) < 128) { word += text[i]; } else { word = "'";}
-            word += "P";
+            word += "_";
             //std::cout<<static_cast<int>(text[i])<<'\n';
         }else{
             while(isalpha(text[i])){
@@ -114,6 +123,7 @@ std::vector<std::pair<int, int>> calcSizes(const std::string& text){
     return sizes;
 }
 
+//Calculates the break even point where the compressed size becomes less than the size of the original text
 void getBreakEven(const std::vector<std::pair<int, int>>& sizes, const std::string& text){
     bool found = false;
     for (auto& p : sizes){
